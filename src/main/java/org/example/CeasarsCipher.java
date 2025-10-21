@@ -1,9 +1,10 @@
 package org.example;
 
 public class CeasarsCipher {
-    private static final char[] ALPHABET = "ёйцукенгшщзхъфывапролджэячсмитьбю .,”’:-!?".toCharArray();
+    static final char[] ALPHABET = "ёйцукенгшщзхъфывапролджэячсмитьбю .,”’:-!?".toCharArray();
 
     public static String encrypt(String text, int shift) {
+
         return transformedText(text, shift);
     }
     public static String decrypt(String encryptedText, int shift) {
