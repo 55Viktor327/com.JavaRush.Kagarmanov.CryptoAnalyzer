@@ -2,58 +2,66 @@ package org.example;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class FileManager {
-
-//    Поле хранит путь к обрабатываемому файлу.
-
     private String filePath;
+    private String currentFilePath;
+    private String basePath;
 
-//     * Метод устанавливает путь к файлу, запрашивая ввод у пользователя. После ввода проверяется существование файла.
-//     * Если файл отсутствует, предлагается создание нового файла и каталога.
+    public void setBasePath(String path) {
+        this.basePath = path;
+    }
 
+    public String constructFullPath(String fileName) {
+        if (this.basePath == null || this.basePath.isEmpty()) {
+            throw new IllegalStateException("Базовый путь не установлен.");
+        }
 
-    public void setFilePath(Scanner scanner) throws IOException {
-        System.out.print("Введите полный путь к файлу: ");
-        this.filePath = scanner.nextLine();
+        Path fullPath = Paths.get(basePath).resolve(fileName);
+        return fullPath.normalize().toString();
+    }
 
-        // Проверяем, существует ли файл по введенному пути
-        if (!Files.exists(Paths.get(filePath))) {
-            System.out.println("Указанный путь '" + filePath + "' не существует.");
+       public void setFilePath(String filePath) throws IOException {
+        this.filePath = filePath.trim();
+        checkAndCreateIfNotExists(this.filePath);
+    }
 
-            System.out.print("Создать указанный файл и каталог? (Да/Нет): ");
+    private void checkAndCreateIfNotExists(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        if (!Files.exists(path)) {
+            System.out.print("Указанный файл не существует. Создать указанный файл и каталог? (Да/Нет): ");
+            Scanner scanner = new Scanner(System.in);
             String choice = scanner.nextLine().trim().toLowerCase();
 
             if ("да".equals(choice)) {
-                Files.createDirectories(Paths.get(filePath).getParent());
-                Files.createFile(Paths.get(filePath));
+                Files.createDirectories(path.getParent());
+                Files.createFile(path);
                 System.out.println("Новый файл успешно создан по адресу: " + filePath);
+            } else {
+                throw new IOException("Файл не найден и не создан по запросу пользователя.");
             }
         }
     }
-//
-//     Чтение содержимого файла и возврат строкового представления его содержимого.
-//     return содержимое файла в виде строки, где каждая новая строка обозначается символом "\\\\n"
 
     public String readData() throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(this.filePath));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\\n");
-        }
-        reader.close();
-        return sb.toString();
+        return new String(Files.readAllBytes(Paths.get(filePath)));
     }
-//
-//Запись переданных данных в файл. Старые данные будут перезаписаны новыми.
-//data строковые данные, предназначенные для записи в файл
 
     public void writeData(String data) throws IOException {
-        PrintWriter writer = new PrintWriter(new FileWriter(this.filePath));
-        writer.print(data);
-        writer.close();
+        if(currentFilePath == null || currentFilePath.isBlank()) {
+            throw new IllegalStateException("Имя файла не установлено");
+        }
+        Files.write(Paths.get(currentFilePath), data.getBytes());
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public static String cleanUpPath(String path) {
+        return path.trim().replaceAll("^\"|\"$", "");
     }
 }

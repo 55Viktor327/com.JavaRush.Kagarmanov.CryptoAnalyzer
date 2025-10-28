@@ -1,16 +1,30 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class BruteForce {
+    public void bruteForceDecrypt(FileManager fileManager, String originalText) throws IOException {
+        CeasarsCipher cipher = new CeasarsCipher();
 
-    public static  List<String> bruteForceDecrypt(String encryptedText) {
-        List<String> possibleDecryptions = new ArrayList<>();
-        for (int shift = 0; shift < CeasarsCipher.ALPHABET.length; shift++) {
-            String decryptedText = CeasarsCipher.decrypt(encryptedText, shift);
-            possibleDecryptions.add(decryptedText);
+        // Определяем родительский каталог исходного файла
+        Path parentDir = Paths.get(fileManager.getFilePath()).getParent();
+
+        // Создаем директорию для хранения расшифрованных файлов
+        Path decryptDir = parentDir.resolve("decryptBruteForce");
+        Files.createDirectories(decryptDir); // Создаем директорию, если её нет
+
+        for (int key = 1; key <= CeasarsCipher.ALPHABET.length; key++) {
+            String decryptedText = cipher.decrypt(originalText, key);
+
+            // Имя файла: decrypted_{ключ}.txt
+            String filename = "decrypted_" + key + ".txt";
+            Path outputFile = decryptDir.resolve(filename);
+
+            // Записываем расшифрованный текст в файл
+            Files.write(outputFile, decryptedText.getBytes());
         }
-        return possibleDecryptions;
     }
 }

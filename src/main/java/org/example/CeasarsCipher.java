@@ -2,34 +2,34 @@ package org.example;
 
 public class CeasarsCipher {
     static final char[] ALPHABET = "ёйцукенгшщзхъфывапролджэячсмитьбю .,”’:-!?".toCharArray();
+    public String encryptedText;
+    public String decryptedText;
 
-    public static String encrypt(String text, int shift) {
-
-        return transformedText(text, shift);
-    }
-    public static String decrypt(String encryptedText, int shift) {
-
-        return transformedText(encryptedText, -shift);
-    }
-
-    private static String transformedText(String text, int shift) {
-
+    public void encrypt(String text, int key) {
         StringBuilder result = new StringBuilder();
-
-        for(char character : text.toCharArray()) {
-            int originalPosition = findCharacterIndex(character);
-            if (originalPosition != -1) {
-                int newPosition = originalPosition + shift;
-                if (newPosition >= ALPHABET.length) {
-                    newPosition = (originalPosition + shift) % ALPHABET.length;
-                    char newChar = ALPHABET[newPosition];
-                    result.append(newChar);
-                }
-            }else{
-                result.append(character);
+        for (char ch : text.toCharArray()) {
+            int index = findCharacterIndex(ch);
+            if (index >= 0) { // Буква найдена в нашем алфавите
+                int shiftedIndex = (index + key) % ALPHABET.length;
+                result.append(ALPHABET[shiftedIndex]);
+            } else {
+                result.append(ch); // Оставляем неприведённые символы как есть
             }
         }
-        return result.toString();
+        encryptedText = result.toString();
+    }
+    public String decrypt(String text, int key) {
+        StringBuilder result = new StringBuilder();
+        for (char ch : text.toCharArray()) {
+            int index = findCharacterIndex(ch);
+            if (index >= 0) { // Буква найдена в нашем алфавите
+                int shiftedIndex = (index - key + ALPHABET.length) % ALPHABET.length;
+                result.append(ALPHABET[shiftedIndex]);
+            } else {
+                result.append(ch); // Оставляем неприведённые символы как есть
+            }
+        }
+        return decryptedText = result.toString();
     }
 
     private static int findCharacterIndex(char letter) {
