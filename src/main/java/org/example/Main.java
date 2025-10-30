@@ -50,7 +50,7 @@ public class Main{
                 System.out.print("Введите полный путь к файлу: ");
                 userInput = input.nextLine();
                 BruteForce bruteForce = new BruteForce();
-                bruteForce.bruteForceDecrypt(fileManager, fileManager.readFile(userInput));
+                bruteForce.bruteForceDecrypt(userInput, fileManager.readFile(userInput));
                 break;
 
             case 0:

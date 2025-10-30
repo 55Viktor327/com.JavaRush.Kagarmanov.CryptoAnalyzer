@@ -26,13 +26,13 @@ public class CeasarsCipher {
         StringBuilder result = new StringBuilder();
         for (char ch : text.toCharArray()) {
             int index = findCharacterIndex(ch);
-            if (index >= 0) { // Буква найдена в нашем алфавите
-                int shiftedIndex = (index + key) % ALPHABET.length;
+            if (index >= 0) {
+                int shiftedIndex = ((index + key) % ALPHABET.length + ALPHABET.length) % ALPHABET.length;
                 result.append(ALPHABET[shiftedIndex]);
             } else {
-                result.append(ch); // Оставляем неприведённые символы как есть
+                result.append(ch); // Просто добавляем остальные символы
             }
         }
-    return result.toString();
+        return result.toString();
     }
 }

@@ -7,9 +7,10 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class FileManager {
+
     public String readFile(String filePath) throws IOException {
         // Логика чтения файла
-        Path path = Paths.get(filePath);
+        Path path = Paths.get(filePath.replace("\"", "").trim());
         if(!Files.exists(path)){
             throw new IOException("File does not exist");
         }
@@ -18,31 +19,25 @@ public class FileManager {
 
     public void writeFile(String filePath, String content) throws IOException {
         // Логика записи файла
-        Path path = Paths.get(filePath);
+        Path path = Paths.get(filePath.replace("\"", "").trim());
         Files.createDirectories(path.getParent());
         Files.writeString(path, content);
     }
 
-    public static void fileSaver(String filePath) {
-        Scanner scanner = new Scanner(System.in);
+    public static void fileSaver(String filePath) throws IOException {
+        Path path = Paths.get(filePath.replace("\"", "").trim());
+        if (!Files.exists(path)) {
+            System.out.print("Указанный файл не существует. Создать указанный файл и каталог? (Да/Нет): ");
+            Scanner scanner = new Scanner(System.in);
+            String choice = scanner.nextLine().trim().toLowerCase();
 
-        try {
-            // Получаем объект Path и извлекаем родительскую директорию
-            File file = Paths.get(filePath).toFile();
-            String directoryPath = file.getParent();
-
-            if (directoryPath != null && !directoryPath.isEmpty()) {
-                System.out.print("Введите новое имя файла: ");
-                String newFileName = scanner.nextLine().trim();
-
-                // Формируем полный путь к новому файлу
-                String fullNewFilePath = directoryPath + "/" + newFileName;
-                System.out.println("Новый файл будет сохранён по следующему пути: " + fullNewFilePath);
+            if ("да".equals(choice)) {
+                Files.createDirectories(path.getParent());
+                Files.createFile(path);
+                System.out.println("Новый файл успешно создан по адресу: " + filePath);
             } else {
-                System.err.println("Ошибка: не удалось определить директорию файла.");
+                throw new IOException("Файл не найден и не создан по запросу пользователя.");
             }
-        } finally {
-            scanner.close(); // Обязательно закрываем сканнер
         }
     }
 }
