@@ -7,61 +7,42 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class FileManager {
-    private String filePath;
-    private String currentFilePath;
-    private String basePath;
-
-    public void setBasePath(String path) {
-        this.basePath = path;
-    }
-
-    public String constructFullPath(String fileName) {
-        if (this.basePath == null || this.basePath.isEmpty()) {
-            throw new IllegalStateException("Базовый путь не установлен.");
-        }
-
-        Path fullPath = Paths.get(basePath).resolve(fileName);
-        return fullPath.normalize().toString();
-    }
-
-       public void setFilePath(String filePath) throws IOException {
-        this.filePath = filePath.trim();
-        checkAndCreateIfNotExists(this.filePath);
-    }
-
-    private void checkAndCreateIfNotExists(String filePath) throws IOException {
+    public String readFile(String filePath) throws IOException {
+        // Логика чтения файла
         Path path = Paths.get(filePath);
-        if (!Files.exists(path)) {
-            System.out.print("Указанный файл не существует. Создать указанный файл и каталог? (Да/Нет): ");
-            Scanner scanner = new Scanner(System.in);
-            String choice = scanner.nextLine().trim().toLowerCase();
+        if(!Files.exists(path)){
+            throw new IOException("File does not exist");
+        }
+        return new String(Files.readAllBytes(path));
+    }
 
-            if ("да".equals(choice)) {
-                Files.createDirectories(path.getParent());
-                Files.createFile(path);
-                System.out.println("Новый файл успешно создан по адресу: " + filePath);
+    public void writeFile(String filePath, String content) throws IOException {
+        // Логика записи файла
+        Path path = Paths.get(filePath);
+        Files.createDirectories(path.getParent());
+        Files.writeString(path, content);
+    }
+
+    public static void fileSaver(String filePath) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            // Получаем объект Path и извлекаем родительскую директорию
+            File file = Paths.get(filePath).toFile();
+            String directoryPath = file.getParent();
+
+            if (directoryPath != null && !directoryPath.isEmpty()) {
+                System.out.print("Введите новое имя файла: ");
+                String newFileName = scanner.nextLine().trim();
+
+                // Формируем полный путь к новому файлу
+                String fullNewFilePath = directoryPath + "/" + newFileName;
+                System.out.println("Новый файл будет сохранён по следующему пути: " + fullNewFilePath);
             } else {
-                throw new IOException("Файл не найден и не создан по запросу пользователя.");
+                System.err.println("Ошибка: не удалось определить директорию файла.");
             }
+        } finally {
+            scanner.close(); // Обязательно закрываем сканнер
         }
-    }
-
-    public String readData() throws IOException {
-        return new String(Files.readAllBytes(Paths.get(filePath)));
-    }
-
-    public void writeData(String data) throws IOException {
-        if(currentFilePath == null || currentFilePath.isBlank()) {
-            throw new IllegalStateException("Имя файла не установлено");
-        }
-        Files.write(Paths.get(currentFilePath), data.getBytes());
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public static String cleanUpPath(String path) {
-        return path.trim().replaceAll("^\"|\"$", "");
     }
 }
