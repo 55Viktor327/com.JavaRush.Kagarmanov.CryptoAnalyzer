@@ -8,10 +8,9 @@ import java.nio.file.Paths;
 public class BruteForce {
     public void bruteForceDecrypt(String filePath, String originalText) throws IOException {
         CeasarsCipher cipher = new CeasarsCipher();
-        FileManager fileManager = new FileManager();
 
         // Определяем родительский каталог исходного файла
-        Path parentDir = Paths.get(fileManager.readFile(filePath)).getParent();
+        Path parentDir = Paths.get(filePath.replace("\"", "").trim()).getParent();
 
         // Создаем директорию для хранения расшифрованных файлов
         Path decryptDir = parentDir.resolve("decryptBruteForce");

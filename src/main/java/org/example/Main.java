@@ -31,8 +31,8 @@ public class Main{
                 key = input.nextInt();
                 input.nextLine();
                 cipher.encrypt(fileManager.readFile(userInput), key);
-                fileManager.fileSaver(userInput);
-                fileManager.writeFile(userInput, cipher.encryptedText);
+                input.nextLine();
+                fileManager.writeFile(fileManager.fileSaver(userInput), cipher.encryptedText);
                 break;
 
             case 2:
@@ -42,8 +42,7 @@ public class Main{
                 key = input.nextInt();
                 input.nextLine();
                 cipher.decrypt(fileManager.readFile(userInput), key);
-                fileManager.fileSaver(userInput);
-                fileManager.writeFile(userInput, cipher.decryptedText);
+                fileManager.writeFile(FileManager.fileSaver(userInput), cipher.decryptedText);
                 break;
 
             case 3:

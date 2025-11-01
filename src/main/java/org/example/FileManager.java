@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class FileManager {
 
-    public String readFile(String filePath) throws IOException {
+    public static String readFile(String filePath) throws IOException {
         // Логика чтения файла
         Path path = Paths.get(filePath.replace("\"", "").trim());
         if(!Files.exists(path)){
@@ -24,20 +24,16 @@ public class FileManager {
         Files.writeString(path, content);
     }
 
-    public static void fileSaver(String filePath) throws IOException {
+    public static String fileSaver(String filePath) throws IOException {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Введите путь к файлу в котором хотите сохранить файл: ");
+        filePath = scan.nextLine();
         Path path = Paths.get(filePath.replace("\"", "").trim());
-        if (!Files.exists(path)) {
-            System.out.print("Указанный файл не существует. Создать указанный файл и каталог? (Да/Нет): ");
-            Scanner scanner = new Scanner(System.in);
-            String choice = scanner.nextLine().trim().toLowerCase();
-
-            if ("да".equals(choice)) {
-                Files.createDirectories(path.getParent());
-                Files.createFile(path);
-                System.out.println("Новый файл успешно создан по адресу: " + filePath);
-            } else {
-                throw new IOException("Файл не найден и не создан по запросу пользователя.");
-            }
-        }
+        Path parentDir = Paths.get(path.getParent().toUri());
+        Files.createDirectories(parentDir);
+        System.out.println("Введите имя файла: ");
+        String fileName = scan.nextLine();
+        Path outputFile = parentDir.resolve(fileName);
+        return outputFile.toString();
     }
 }
