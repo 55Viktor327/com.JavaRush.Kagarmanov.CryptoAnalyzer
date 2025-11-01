@@ -12,7 +12,7 @@ public class Main{
         String userInput = null;
         int key;
 
-        System.out.println("Добро пожаловать в приложение \"CryptoAnalyzer\"!\n");
+        System.out.println("Добро пожаловать в приложение \"CryptoAnalyzer\"!");
         System.out.println("    Данная пррограмма предназначена для зашифровывания и расшифровывания текста методом Гая Юлия Цезаря!");
         System.out.println("Она имеет следующие возможности:");
         System.out.println("1 - Зашифровать текст");
@@ -25,22 +25,19 @@ public class Main{
 
         switch (option) {
             case 1:
-                System.out.print("Введите полный путь к файлу: ");
+                System.out.println("Введите полный путь к файлу: ");
                 userInput = input.nextLine();
-                System.out.print("Введите ключ: ");
+                System.out.println("Введите ключ: ");
                 key = input.nextInt();
-                input.nextLine();
                 cipher.encrypt(fileManager.readFile(userInput), key);
-                input.nextLine();
                 fileManager.writeFile(fileManager.fileSaver(userInput), cipher.encryptedText);
                 break;
 
             case 2:
-                System.out.print("Введите полный путь к файлу: ");
+                System.out.println("Введите полный путь к файлу: ");
                 userInput = input.nextLine();
-                System.out.print("Введите ключ: ");
+                System.out.println("Введите ключ: ");
                 key = input.nextInt();
-                input.nextLine();
                 cipher.decrypt(fileManager.readFile(userInput), key);
                 fileManager.writeFile(FileManager.fileSaver(userInput), cipher.decryptedText);
                 break;

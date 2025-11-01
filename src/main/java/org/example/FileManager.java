@@ -26,8 +26,7 @@ public class FileManager {
 
     public static String fileSaver(String filePath) throws IOException {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Введите путь к файлу в котором хотите сохранить файл: ");
-        filePath = scan.nextLine();
+
         Path path = Paths.get(filePath.replace("\"", "").trim());
         Path parentDir = Paths.get(path.getParent().toUri());
         Files.createDirectories(parentDir);
